@@ -59,6 +59,7 @@ if __name__ == '__main__':
         cur_data = {x[1]: {current_time: x[2:]} for x in stats}
    
         changed = False
+        changed_or_new_states = []
 
         for state in cur_data:
             if state not in past_data:
@@ -66,11 +67,13 @@ if __name__ == '__main__':
                 info.append(f'NEW_STATE {state} got corona virus: {cur_data[state][current_time]}')
                 past_data[state] = {}
                 changed = True
+                changed_or_new_states.append(state)
             else:
                 past = past_data[state]['latest']
                 cur = cur_data[state][current_time]
                 if past != cur:
                     changed = True
+                    changed_or_new_states.append(state)
                     info.append(f'Change for {state}: {past}->{cur}')
         
         events_info = ''
@@ -80,7 +83,7 @@ if __name__ == '__main__':
 
         if changed:
             # override the latest one now
-            for state in cur_data:
+            for state in changed_or_new_states:
                 past_data[state]['latest'] = cur_data[state][current_time]
                 past_data[state][current_time] = cur_data[state][current_time]
             save(past_data)
