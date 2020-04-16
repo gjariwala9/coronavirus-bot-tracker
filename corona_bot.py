@@ -11,7 +11,7 @@ FORMAT = '[%(asctime)-15s] %(message)s'
 logging.basicConfig(format=FORMAT, level=logging.DEBUG, filename='bot.log', filemode='a')
 
 URL = 'https://www.mohfw.gov.in/'
-SHORT_HEADERS = ['Sno', 'State','In','Fr','Cd','Dt']
+SHORT_HEADERS = ['S. No.', 'State','Total Confirmed cases ','Cured/Discharged/Migrated','Death']
 FILE_NAME = 'corona_india_data.json'
 extract_contents = lambda row: [x.text.replace('\n', '') for x in row]
 
@@ -48,7 +48,7 @@ if __name__ == '__main__':
         for row in all_rows:
             stat = extract_contents(row.find_all('td'))
             if stat:
-                if len(stat) == 5:
+                if len(stat) != 5:
                     # last row
                     stat = ['', *stat]
                     stats.append(stat)
