@@ -61,6 +61,12 @@ if __name__ == '__main__':
         changed = False
         changed_or_new_states = []
 
+        def display_change(data):
+            msg = ''
+            for i in range(3):
+                msg += f"{SHORT_HEADERS[i+2]}: {data[i]}\n"
+            return msg 
+
         for state in cur_data:
             if state not in past_data:
                 # new state has emerged
@@ -74,7 +80,7 @@ if __name__ == '__main__':
                 if past != cur:
                     changed = True
                     changed_or_new_states.append(state)
-                    info.append(f'Change for {state}: {past}->{cur}')
+                    info.append(f'Change for {state}:\nBefore:\n{display_change(past)}Now:\n{display_change(cur)}')
         
         events_info = ''
         for event in info:
@@ -89,7 +95,7 @@ if __name__ == '__main__':
             save(past_data)
 
             table = tabulate(stats, headers=SHORT_HEADERS, tablefmt='psql')
-            slack_text = f'Please find CoronaVirus Summary for India below:\n{events_info}\n```{table}```'
+            slack_text = f'Please find CoronaVirus Summary for India below:\n{events_info}\n{table}'
             slacker()(slack_text)
     except Exception as e:
         logging.exception('oops, corono script failed.')
